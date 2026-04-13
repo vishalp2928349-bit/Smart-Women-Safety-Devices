@@ -4,6 +4,11 @@ let emergencyContacts = [];
 let locationSharing = false;
 let sosActive = false;
 
+// Path Helpers to handle root vs html/ subfolder
+const getBasePath = () => window.location.pathname.includes('/html/') ? '../' : '';
+const getHtmlPath = () => window.location.pathname.includes('/html/') ? '' : 'html/';
+
+
 // API Helper
 async function apiCall(url, method = 'GET', data = null) {
   try {
@@ -39,15 +44,17 @@ async function loginUser(event) {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   
-  const result = await apiCall('../backend/auth/login.php', 'POST', { email, password });
+  const result = await apiCall(`${getBasePath()}backend/auth/login.php`, 'POST', { email, password });
+
   
   if (result && result.success) {
     currentUser = result.data.user;
     localStorage.setItem('user', JSON.stringify(currentUser));
     showNotification('✅ Login successful!', 'success');
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = `${getHtmlPath()}dashboard.html`;
     }, 1000);
+
   }
 }
 
@@ -56,8 +63,8 @@ async function logoutUser() {
   currentUser = null;
   // Note: For a full logout, we'd also call a backend logout.php,
   // but for now clearing localStorage is a good start for the UI.
-  await apiCall('../backend/auth/logout.php', 'POST'); 
-  window.location.href = 'login.html';
+  await apiCall(`${getBasePath()}backend/auth/logout.php`, 'POST'); 
+  window.location.href = `${getHtmlPath()}login.html`;
 }
 
 async function registerUser(event) {
@@ -67,15 +74,17 @@ async function registerUser(event) {
   const password = document.getElementById('password').value;
   const contact = document.getElementById('contact').value;
   
-  const result = await apiCall('../backend/auth/register.php', 'POST', { name, email, password, contact });
+  const result = await apiCall(`${getBasePath()}backend/auth/register.php`, 'POST', { name, email, password, contact });
+
   
   if (result && result.success) {
     currentUser = result.data.user;
     localStorage.setItem('user', JSON.stringify(currentUser));
     showNotification('✅ Registration successful!', 'success');
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = `${getHtmlPath()}dashboard.html`;
     }, 1500);
+
   }
 }
 
@@ -106,7 +115,8 @@ async function confirmSOS() {
         lng: position.coords.longitude
       };
       
-      const result = await apiCall('../backend/sos/send_sos.php', 'POST', location);
+      const result = await apiCall(`${getBasePath()}backend/sos/send_sos.php`, 'POST', location);
+
       
       if (result && result.success) {
         showNotification('🚨 SOS Alert Sent! Emergency services notified.', 'danger');
@@ -123,8 +133,9 @@ async function confirmSOS() {
       setTimeout(() => { sosActive = false; }, 30000);
     }, (error) => {
       showNotification('❌ Unable to get location. SOS sent without location data.', 'warning');
-      apiCall('../backend/sos/send_sos.php', 'POST', {});
+      apiCall(`${getBasePath()}backend/sos/send_sos.php`, 'POST', {});
     });
+
   } else {
     showNotification('❌ Geolocation not supported.', 'danger');
   }
@@ -142,7 +153,8 @@ function shareLocation() {
       const { latitude, longitude } = position.coords;
       showNotification(`✅ Location shared: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`, 'success');
       // In a real app, this would call a backend to share with contacts
-      apiCall('../backend/sos/share_location.php', 'POST', { lat: latitude, lng: longitude });
+      apiCall(`${getBasePath()}backend/sos/share_location.php`, 'POST', { lat: latitude, lng: longitude });
+
     }, (error) => {
       showNotification('❌ Unable to share location: ' + error.message, 'danger');
     });
@@ -159,7 +171,8 @@ async function submitReport(event) {
   const time = new Date().toTimeString().split(' ')[0];
   
   if (incident.trim()) {
-    const result = await apiCall('../backend/reports/add_report.php', 'POST', {
+    const result = await apiCall(`${getBasePath()}backend/reports/add_report.php`, 'POST', {
+
       incident_type: 'Other',
       date: date,
       time: time,
@@ -170,8 +183,9 @@ async function submitReport(event) {
     if (result && result.success) {
       showNotification('✅ Incident report submitted successfully!', 'success');
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = `${getHtmlPath()}dashboard.html`;
       }, 1500);
+
     }
   } else {
     showNotification('❌ Please describe the incident', 'danger');
@@ -180,7 +194,8 @@ async function submitReport(event) {
 
 // Contact Management
 async function addEmergencyContact(name, phone, relationship) {
-  const result = await apiCall('../backend/contacts/add_contact.php', 'POST', { name, phone, relationship });
+  const result = await apiCall(`${getBasePath()}backend/contacts/add_contact.php`, 'POST', { name, phone, relationship });
+
   if (result && result.success) {
     showNotification(`✅ ${name} added successfully`, 'success');
     loadContacts();
@@ -188,7 +203,8 @@ async function addEmergencyContact(name, phone, relationship) {
 }
 
 async function removeEmergencyContact(id) {
-  const result = await apiCall('../backend/contacts/delete_contact.php', 'POST', { id });
+  const result = await apiCall(`${getBasePath()}backend/contacts/delete_contact.php`, 'POST', { id });
+
   if (result && result.success) {
     showNotification('✅ Contact removed', 'success');
     loadContacts();
@@ -196,7 +212,8 @@ async function removeEmergencyContact(id) {
 }
 
 async function loadContacts() {
-  const result = await apiCall('../backend/contacts/get_contacts.php');
+  const result = await apiCall(`${getBasePath()}backend/contacts/get_contacts.php`);
+
   if (result && result.success) {
     emergencyContacts = result.data;
     renderContacts();
@@ -281,9 +298,10 @@ function initializeApp() {
   const isProtected = protectedPages.some(page => window.location.pathname.includes(page));
   
   if (isProtected && !currentUser) {
-    window.location.href = 'login.html';
+    window.location.href = `${getHtmlPath()}login.html`;
     return;
   }
+
 
   // Update welcome message if on dashboard
   const welcomeName = document.getElementById('welcome-name');

@@ -15,7 +15,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">
+        <a class="navbar-brand fw-bold" href="../index.html">
           <i class="fas fa-shield-alt me-2"></i>SafetyGuard
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -372,7 +372,7 @@
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
           showNotification('🗑️ Account deletion in progress...', 'warning');
           setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
           }, 3000);
         }
       }
