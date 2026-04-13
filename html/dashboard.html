@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safety Dashboard - SafetyGuard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          <i class="fas fa-shield-alt me-2"></i>SafetyGuard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="report.html">Report Incident</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contacts.html">Emergency Contacts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:void(0)" onclick="logoutUser()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid" style="margin-top: 80px;">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <div class="profile-avatar mb-3">
+                <i class="fas fa-user-circle fa-4x text-primary"></i>
+              </div>
+              <h5 class="card-title">Welcome, <span id="welcome-name">User</span>!</h5>
+              <p class="text-muted">Last active: 2 minutes ago</p>
+              <div class="status-indicator online"></div>
+              <span class="status-text">Online</span>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Safety Stats</h6>
+            </div>
+            <div class="card-body">
+              <div class="stat-item d-flex justify-content-between mb-2">
+                <span>Days Safe:</span>
+                <strong class="text-success">45</strong>
+              </div>
+              <div class="stat-item d-flex justify-content-between mb-2">
+                <span>Location Shares:</span>
+                <strong class="text-info">12</strong>
+              </div>
+              <div class="stat-item d-flex justify-content-between mb-2">
+                <span>Reports Filed:</span>
+                <strong class="text-warning">3</strong>
+              </div>
+              <div class="stat-item d-flex justify-content-between">
+                <span>Emergency Contacts:</span>
+                <strong class="text-primary">5</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Safety Tips Widget -->
+          <div class="card">
+            <div class="card-header">
+              <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Safety Tip</h6>
+            </div>
+            <div class="card-body">
+              <p class="small">Always share your location with trusted contacts when traveling alone, especially at night.</p>
+              <button class="btn btn-sm btn-outline-primary" onclick="showRandomTip()">New Tip</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="col-lg-9 col-md-8">
+          <!-- Emergency SOS Section -->
+          <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+            <div>
+              <h5 class="alert-heading">Emergency SOS</h5>
+              <p class="mb-0">Press the SOS button below to immediately alert emergency contacts and authorities with your location.</p>
+            </div>
+          </div>
+
+          <!-- Emergency Buttons -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body text-center">
+                  <h4 class="mb-4">Emergency Actions</h4>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <button class="btn btn-danger btn-lg w-100 dashboard-btn" onclick="safetyApp.sendSOS()" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>SOS Alert</span>
+                      </button>
+                    </div>
+                    <div class="col-md-4">
+                      <button class="btn btn-warning btn-lg w-100 dashboard-btn" onclick="safetyApp.emergencyCall()" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
+                        <i class="fas fa-phone"></i>
+                        <span>Emergency Call</span>
+                      </button>
+                    </div>
+                    <div class="col-md-4">
+                      <button class="btn btn-info btn-lg w-100 dashboard-btn" onclick="safetyApp.shareLocation()" style="background: linear-gradient(135deg, #17a2b8, #6f42c1);">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Share Location</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <h4 class="mb-3">Quick Actions</h4>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center quick-action-card">
+                <div class="card-body">
+                  <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                  <h6>Send Email</h6>
+                  <button class="btn btn-sm btn-primary" onclick="sendEmail()">Send</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center quick-action-card">
+                <div class="card-body">
+                  <i class="fas fa-sms fa-2x text-success mb-2"></i>
+                  <h6>Send SMS</h6>
+                  <button class="btn btn-sm btn-success" onclick="sendSMS()">Send</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center quick-action-card">
+                <div class="card-body">
+                  <i class="fas fa-file-alt fa-2x text-warning mb-2"></i>
+                  <h6>Report Incident</h6>
+                  <a href="report.html" class="btn btn-sm btn-warning">Report</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card text-center quick-action-card">
+                <div class="card-body">
+                  <i class="fas fa-users fa-2x text-info mb-2"></i>
+                  <h6>Manage Contacts</h6>
+                  <a href="contacts.html" class="btn btn-sm btn-info">Manage</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                  <div class="activity-item d-flex align-items-center mb-3">
+                    <div class="activity-icon bg-success">
+                      <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                      <p class="mb-0"><strong>Location shared</strong></p>
+                      <small class="text-muted">2 minutes ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item d-flex align-items-center mb-3">
+                    <div class="activity-icon bg-info">
+                      <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                      <p class="mb-0"><strong>Emergency call made</strong></p>
+                      <small class="text-muted">1 hour ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item d-flex align-items-center">
+                    <div class="activity-icon bg-warning">
+                      <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                      <p class="mb-0"><strong>Incident reported</strong></p>
+                      <small class="text-muted">Yesterday</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Safety Alerts -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0"><i class="fas fa-bell me-2"></i>Safety Alerts</h6>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-warning alert-sm">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>High alert area</strong> - Recent incidents reported in your vicinity
+                  </div>
+                  <div class="alert alert-info alert-sm">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Weather warning</strong> - Heavy rain expected tonight
+                  </div>
+                  <div class="alert alert-success alert-sm">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>All clear</strong> - Your area is currently safe
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Modal -->
+    <div class="modal fade" id="emergencyModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">
+              <i class="fas fa-exclamation-triangle me-2"></i>Emergency Alert
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to send an emergency SOS alert? This will:</p>
+            <ul>
+              <li>Send your location to all emergency contacts</li>
+              <li>Alert local authorities</li>
+              <li>Activate emergency protocols</li>
+            </ul>
+            <div class="text-center">
+              <button type="button" class="btn btn-danger btn-lg me-2" onclick="safetyApp.confirmSOS()">
+                <i class="fas fa-exclamation-triangle me-2"></i>Send SOS
+              </button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
+  </body>
+</html>

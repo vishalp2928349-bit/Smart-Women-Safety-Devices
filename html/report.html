@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Incident - SafetyGuard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          <i class="fas fa-shield-alt me-2"></i>SafetyGuard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="report.html">Report Incident</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contacts.html">Emergency Contacts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="javascript:void(0)" onclick="logoutUser()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="margin-top: 100px;">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <!-- Header -->
+          <div class="text-center mb-5">
+            <h2><i class="fas fa-file-alt me-2"></i>Report Incident</h2>
+            <p class="text-muted">Please provide detailed information about the incident to help authorities respond effectively.</p>
+          </div>
+
+          <!-- Incident Report Form -->
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Incident Details</h5>
+            </div>
+            <div class="card-body">
+              <form id="incidentReportForm" onsubmit="submitReport(event)">
+                <!-- Incident Type -->
+                <div class="mb-4">
+                  <label class="form-label">Incident Type *</label>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="harassment" value="harassment" required>
+                        <label class="form-check-label" for="harassment">
+                          <i class="fas fa-exclamation-triangle text-warning me-2"></i>Harassment
+                        </label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="stalking" value="stalking">
+                        <label class="form-check-label" for="stalking">
+                          <i class="fas fa-eye text-danger me-2"></i>Stalking
+                        </label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="assault" value="assault">
+                        <label class="form-check-label" for="assault">
+                          <i class="fas fa-fist-raised text-danger me-2"></i>Assault
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="theft" value="theft">
+                        <label class="form-check-label" for="theft">
+                          <i class="fas fa-hand-holding-usd text-warning me-2"></i>Theft
+                        </label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="vandalism" value="vandalism">
+                        <label class="form-check-label" for="vandalism">
+                          <i class="fas fa-spray-can text-warning me-2"></i>Vandalism
+                        </label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="incidentType" id="other" value="other">
+                        <label class="form-check-label" for="other">
+                          <i class="fas fa-ellipsis-h text-muted me-2"></i>Other
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Date and Time -->
+                <div class="row mb-4">
+                  <div class="col-md-6">
+                    <label for="incidentDate" class="form-label">Date of Incident *</label>
+                    <input type="date" class="form-control" id="incidentDate" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="incidentTime" class="form-label">Time of Incident *</label>
+                    <input type="time" class="form-control" id="incidentTime" required>
+                  </div>
+                </div>
+
+                <!-- Location -->
+                <div class="mb-4">
+                  <label class="form-label">Location *</label>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <input type="text" class="form-control mb-2" id="locationAddress" placeholder="Street address or landmark" required>
+                    </div>
+                    <div class="col-md-4">
+                      <button type="button" class="btn btn-outline-primary w-100" onclick="getCurrentLocationForReport()">
+                        <i class="fas fa-map-marker-alt me-2"></i>Use Current Location
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" id="locationCity" placeholder="City" required>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" id="locationState" placeholder="State/Province" required>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Incident Description -->
+                <div class="mb-4">
+                  <label for="incidentDescription" class="form-label">Detailed Description *</label>
+                  <textarea class="form-control" id="incidentDescription" rows="5" 
+                    placeholder="Please provide a detailed description of what happened, including any relevant details about the perpetrator, witnesses, or circumstances..." required></textarea>
+                </div>
+
+                <!-- Perpetrator Information -->
+                <div class="mb-4">
+                  <label class="form-label">Perpetrator Information (if known)</label>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input type="text" class="form-control mb-2" id="perpetratorGender" placeholder="Gender">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control mb-2" id="perpetratorAge" placeholder="Approximate Age">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input type="text" class="form-control mb-2" id="perpetratorHeight" placeholder="Height">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control mb-2" id="perpetratorClothing" placeholder="Clothing Description">
+                    </div>
+                  </div>
+                  <textarea class="form-control" id="perpetratorDescription" rows="3" 
+                    placeholder="Additional description of the perpetrator..."></textarea>
+                </div>
+
+                <!-- Witnesses -->
+                <div class="mb-4">
+                  <label for="witnesses" class="form-label">Witnesses (if any)</label>
+                  <textarea class="form-control" id="witnesses" rows="3" 
+                    placeholder="Describe any witnesses or people who may have seen the incident..."></textarea>
+                </div>
+
+                <!-- Evidence Upload -->
+                <div class="mb-4">
+                  <label class="form-label">Evidence (Photos, Videos, Documents)</label>
+                  <div class="file-upload-area border-2 border-dashed border-secondary rounded p-4 text-center">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Drag and drop files here or click to browse</p>
+                    <input type="file" class="form-control" id="evidenceFiles" multiple accept="image/*,video/*,.pdf,.doc,.docx">
+                    <small class="text-muted">Maximum 5 files, 10MB each</small>
+                  </div>
+                  <div id="filePreview" class="mt-3"></div>
+                </div>
+
+                <!-- Emergency Level -->
+                <div class="mb-4">
+                  <label class="form-label">Emergency Level</label>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="emergencyLevel" id="low" value="low">
+                        <label class="form-check-label text-success" for="low">
+                          <i class="fas fa-circle me-2"></i>Low - No immediate danger
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="emergencyLevel" id="medium" value="medium" checked>
+                        <label class="form-check-label text-warning" for="medium">
+                          <i class="fas fa-circle me-2"></i>Medium - Concerning situation
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="emergencyLevel" id="high" value="high">
+                        <label class="form-check-label text-danger" for="high">
+                          <i class="fas fa-circle me-2"></i>High - Immediate danger
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Contact Preferences -->
+                <div class="mb-4">
+                  <label class="form-label">Contact Preferences</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="contactByPhone" checked>
+                    <label class="form-check-label" for="contactByPhone">
+                      Contact me by phone for follow-up
+                    </label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="contactByEmail" checked>
+                    <label class="form-check-label" for="contactByEmail">
+                      Contact me by email for follow-up
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="anonymousReport">
+                    <label class="form-check-label" for="anonymousReport">
+                      Submit anonymously (limited follow-up available)
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="d-flex gap-3">
+                  <button type="submit" class="btn btn-danger btn-lg flex-fill">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Report
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-lg" onclick="saveDraft()">
+                    <i class="fas fa-save me-2"></i>Save Draft
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Emergency Contact Info -->
+          <div class="card mt-4">
+            <div class="card-header bg-warning text-dark">
+              <h6 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Emergency Information</h6>
+            </div>
+            <div class="card-body">
+              <p class="mb-2"><strong>If this is an emergency situation:</strong></p>
+              <ul class="mb-3">
+                <li>Call emergency services immediately (911)</li>
+                <li>Use the SOS button on your dashboard</li>
+                <li>Contact your emergency contacts</li>
+                <li>Move to a safe location if possible</li>
+              </ul>
+              <div class="row">
+                <div class="col-md-6">
+                  <button class="btn btn-danger w-100 mb-2" onclick="emergencyCall()">
+                    <i class="fas fa-phone me-2"></i>Call 911
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <a href="dashboard.html" class="btn btn-warning w-100 mb-2">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Go to Dashboard
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+      // Report-specific functions
+      function getCurrentLocationForReport() {
+        if (navigator.geolocation) {
+          showNotification('📍 Getting your current location...', 'info');
+          
+          navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            // Simulate reverse geocoding
+            document.getElementById('locationAddress').value = `GPS: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            document.getElementById('locationCity').value = 'Current Location';
+            document.getElementById('locationState').value = 'GPS Coordinates';
+            
+            showNotification('✅ Location captured successfully!', 'success');
+          }, (error) => {
+            showNotification('❌ Unable to get location. Please enter manually.', 'warning');
+          });
+        } else {
+          showNotification('❌ Geolocation not supported by this browser.', 'danger');
+        }
+      }
+
+      function saveDraft() {
+        const formData = new FormData(document.getElementById('incidentReportForm'));
+        const draft = {
+          timestamp: new Date().toISOString(),
+          data: Object.fromEntries(formData)
+        };
+        
+        localStorage.setItem('incidentDraft', JSON.stringify(draft));
+        showNotification('💾 Draft saved successfully!', 'success');
+      }
+
+      function loadDraft() {
+        const saved = localStorage.getItem('incidentDraft');
+        if (saved) {
+          const draft = JSON.parse(saved);
+          // Populate form fields with draft data
+          showNotification('📄 Draft loaded successfully!', 'info');
+        }
+      }
+
+      // Enhanced submit function
+      function submitReport(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(event.target);
+        const report = {
+          type: formData.get('incidentType'),
+          date: formData.get('incidentDate'),
+          time: formData.get('incidentTime'),
+          location: {
+            address: formData.get('locationAddress'),
+            city: formData.get('locationCity'),
+            state: formData.get('locationState')
+          },
+          description: formData.get('incidentDescription'),
+          perpetrator: {
+            gender: formData.get('perpetratorGender'),
+            age: formData.get('perpetratorAge'),
+            height: formData.get('perpetratorHeight'),
+            clothing: formData.get('perpetratorClothing'),
+            description: formData.get('perpetratorDescription')
+          },
+          witnesses: formData.get('witnesses'),
+          emergencyLevel: formData.get('emergencyLevel'),
+          contactPreferences: {
+            phone: formData.get('contactByPhone') === 'on',
+            email: formData.get('contactByEmail') === 'on',
+            anonymous: formData.get('anonymousReport') === 'on'
+          },
+          timestamp: new Date().toISOString(),
+          status: 'submitted'
+        };
+
+        // Simulate report submission
+        console.log('Incident Report:', report);
+        
+        showNotification('📋 Submitting report...', 'info');
+        
+        setTimeout(() => {
+          showNotification('✅ Incident report submitted successfully! Authorities have been notified.', 'success');
+          
+          // Clear draft
+          localStorage.removeItem('incidentDraft');
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 2000);
+        }, 2000);
+      }
+
+      // File upload handling
+      document.getElementById('evidenceFiles').addEventListener('change', function(e) {
+        const files = e.target.files;
+        const preview = document.getElementById('filePreview');
+        preview.innerHTML = '';
+        
+        Array.from(files).forEach((file, index) => {
+          const fileItem = document.createElement('div');
+          fileItem.className = 'd-flex align-items-center p-2 border rounded mb-2';
+          fileItem.innerHTML = `
+            <i class="fas fa-file me-2 text-primary"></i>
+            <span class="flex-fill">${file.name}</span>
+            <small class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeFile(${index})">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          preview.appendChild(fileItem);
+        });
+      });
+
+      function removeFile(index) {
+        const input = document.getElementById('evidenceFiles');
+        const dt = new DataTransfer();
+        const { files } = input;
+        
+        for (let i = 0; i < files.length; i++) {
+          if (i !== index) {
+            dt.items.add(files[i]);
+          }
+        }
+        
+        input.files = dt.files;
+        document.getElementById('evidenceFiles').dispatchEvent(new Event('change'));
+      }
+
+      // Initialize form
+      document.addEventListener('DOMContentLoaded', function() {
+        // Set default date to today
+        document.getElementById('incidentDate').value = new Date().toISOString().split('T')[0];
+        
+        // Load draft if exists
+        loadDraft();
+        
+        // Add form validation
+        document.getElementById('incidentReportForm').addEventListener('input', function() {
+          // Auto-save draft every 30 seconds
+          clearTimeout(window.draftTimeout);
+          window.draftTimeout = setTimeout(saveDraft, 30000);
+        });
+      });
+    </script>
+  </body>
+</html>
